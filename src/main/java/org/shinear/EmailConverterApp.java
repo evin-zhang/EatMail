@@ -9,17 +9,6 @@ public class EmailConverterApp {
         window.setLocation(100, 100);
         window.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         window.setLayout(new GridLayout(3, 1));
-        /**
-         * TODO PROGRESS BAR
-         * JProgressBar progressBar = new JProgressBar(0,100);
-         *         progressBar.setValue(0);
-         *         progressBar.setOrientation(SwingConstants.HORIZONTAL);
-         *         progressBar.setIndeterminate(false);
-         *         progressBar.setStringPainted(true);
-         *         progressBar.setVisible(false);
-         *         progressBar.setString("...");
-         */
-
 
         // 创建一个面板对象，用于放置第一行的组件
         JPanel panel1 = new JPanel();

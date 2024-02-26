@@ -10,7 +10,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Pattern;
 
 public class Utils {
 
@@ -22,8 +21,6 @@ public class Utils {
             String mailContent = parseMail(emailFilePath);
 
             // 使用正则表达式匹配数据
-            Pattern pattern = Pattern.compile("(.*):(.*)");
-            //Matcher matcher = pattern.matcher(mailContent);
             String[] splits = mailContent.split("充电桩客服大橙子🍊 \\d{2}:\\d{2}");
 
             // 存储数据
