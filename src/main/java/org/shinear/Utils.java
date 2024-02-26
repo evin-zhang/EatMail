@@ -2,7 +2,6 @@ package org.shinear;
 
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
-
 import javax.mail.BodyPart;
 import javax.mail.MessagingException;
 import javax.mail.Multipart;
@@ -11,7 +10,6 @@ import javax.mail.internet.MimeMessage;
 import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Utils {
@@ -23,40 +21,28 @@ public class Utils {
             // 读取邮件
             String mailContent = parseMail(emailFilePath);
 
-
             // 使用正则表达式匹配数据
-            Pattern pattern = Pattern.compile("(.*)：(.*)");
+            Pattern pattern = Pattern.compile("(.*):(.*)");
             //Matcher matcher = pattern.matcher(mailContent);
             String[] splits = mailContent.split("充电桩客服大橙子🍊 \\d{2}:\\d{2}");
 
             // 存储数据
             List<Map<String, String>> records = new ArrayList<>();
-            //Map<String,String> record = new LinkedHashMap<>();
-            List<String> columnOrder = Arrays.asList("安装完成时间", "客户姓名", "车辆品牌", "增项价格", "增项内容", "物料总用量", "安装人员姓名", "出发地", "安装地");
-            /**
-            while (matcher.find()) {
-                String key = matcher.group(1).trim();
-                String value = matcher.group(2).trim();
-                if ("安装完成时间".equals(key) && !record.isEmpty()) {
-                    records.add(record);
-                    record = new LinkedHashMap<>();
-                }
-                record.put(key, value);
-            }
-            records.add(record);  // 添加最后一条记录
-            */
+            List<String> columnOrder = Arrays.asList("售后维修","安装完成时间", "客户姓名", "车辆品牌", "增项价格", "增项内容", "物料总用量","物料总用量", "安装人员姓名", "出发地", "安装地");
+
             // 按照每条记录进行分割
             for (String split : splits) {
-                Matcher matcher = pattern.matcher(split);
                 Map<String, String> record = new LinkedHashMap<>();
-                while (matcher.find()) {
-                    String key = matcher.group(1).trim();
-                    String value = matcher.group(2).trim();
-                    record.put(key, value);
-                }
-                if (!record.isEmpty()) {
-                    records.add(record);
-                }
+                Arrays.stream(split.split("\n")).forEach(line -> {
+                    if (line.contains("：") || line.contains(":")) {
+                        String[] parts = line.split("[：:]", 2);
+                        record.put(parts[0].trim(), parts[1].trim());
+                    } else {
+                        // Append the line to the last key if there's no "：" in the line
+                        record.computeIfPresent(record.keySet().stream().reduce((first, second) -> second).orElse(null), (key, value) -> value + "\n" + line.trim());
+                    }
+                });
+                records.add(record);
             }
 
             // 创建Excel文件
@@ -98,7 +84,6 @@ public class Utils {
             out.close();
             workbook.close();
 
-            System.out.println("Excel 文件已保存到: " + outputFilePath);
         } catch (Exception e) {
             e.printStackTrace();
         }
